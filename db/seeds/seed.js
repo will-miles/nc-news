@@ -1,4 +1,9 @@
-const { topicData, articleData, commentData, userData } = require('../index');
+const {
+  topicData,
+  articleData,
+  commentData,
+  userData
+} = require('../data/index.js');
 
 const { formatDates, formatComments, makeRefObj } = require('../utils/utils');
 
