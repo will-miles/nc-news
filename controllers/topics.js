@@ -5,7 +5,9 @@ const getAllTopics = (req, res, next) => {
     .then(topics => {
       res.status(200).send(topics);
     })
-    .catch(next);
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 module.exports = { getAllTopics };

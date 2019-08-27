@@ -11,7 +11,7 @@
     "migrate-make": "knex migrate:make",
     "migrate-latest": "knex migrate:latest",
     "migrate-rollback": "knex migrate:rollback",
-    "test-app": "npm run setup-dbs && NODE_ENV=test npm run seed && mocha spec/app.spec.js"
+    "test-app": "npm run setup-dbs && mocha spec/app.spec.js"
   },
   "repository": {
     "type": "git",

@@ -18,17 +18,33 @@ describe('/api', () => {
         return request
           .get('/api/topics')
           .expect(200)
-          .then(res => {
-            expect(res.body).to.be.an('array');
-            expect(res.body.length).to.equal(3);
-            expect(res.body[0]).to.contain.keys('description', 'slug');
+          .then(({ body }) => {
+            expect(body).to.be.an('array');
+            expect(body.length).to.equal(3);
+            expect(body[0]).to.contain.keys('description', 'slug');
+          });
+      });
+      it('Responds with appropriate errors.', () => {
+        return request
+          .get('/api/topic')
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).to.equal('Route not found');
           });
       });
     });
   });
   describe('/users', () => {
     describe('GET users by ID', () => {
-      it('Responds with the user object corresponding to the input ID.', () => {});
+      it('Responds with the user object corresponding to the input ID.', () => {
+        return request
+          .get('/api/users/butter_bridge')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).to.be.an('array');
+            expect(body.length).to.equal(1);
+          });
+      });
     });
   });
 });
