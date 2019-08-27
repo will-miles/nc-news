@@ -10,7 +10,8 @@
     "test": "mocha spec",
     "migrate-make": "knex migrate:make",
     "migrate-latest": "knex migrate:latest",
-    "migrate-rollback": "knex migrate:rollback"
+    "migrate-rollback": "knex migrate:rollback",
+    "test-app": "npm run setup-dbs && NODE_ENV=test npm run seed && mocha spec/app.spec.js"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^6.2.0"
+    "mocha": "^6.2.0",
+    "supertest": "^4.0.2"
   }
 }
