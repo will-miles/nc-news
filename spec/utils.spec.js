@@ -161,4 +161,60 @@ describe('formatComments', () => {
     expect(formatComments(input)).to.eql([]);
     expect(formatComments(input)).to.not.equal(input);
   });
+  it('Returns correctly alters array of 1 comment object.', () => {
+    const comment = [
+      {
+        body: 'Some thought provoking comment.',
+        belongs_to: 'test article',
+        created_by: 'testuser3',
+        votes: 7,
+        created_at: 1478813209256
+      }
+    ];
+    const refObj = { 'test article': 1 };
+    expect(formatComments(comment, refObj)).to.eql([
+      {
+        body: 'Some thought provoking comment.',
+        article_id: 1,
+        author: 'testuser3',
+        votes: 7,
+        created_at: new Date(1478813209256)
+      }
+    ]);
+  });
+  it('Returns correctly alters array of > 1 comment object.', () => {
+    const comment = [
+      {
+        body: 'Some thought provoking comment.',
+        belongs_to: 'test article',
+        created_by: 'testuser3',
+        votes: 7,
+        created_at: 1478813209256
+      },
+      {
+        body: 'A striking rebuttle.',
+        belongs_to: 'another article',
+        created_by: 'testuser2',
+        votes: 1,
+        created_at: 1478813305349
+      }
+    ];
+    const refObj = { 'test article': 1, 'another article': 2 };
+    expect(formatComments(comment, refObj)).to.eql([
+      {
+        body: 'Some thought provoking comment.',
+        article_id: 1,
+        author: 'testuser3',
+        votes: 7,
+        created_at: new Date(1478813209256)
+      },
+      {
+        body: 'A striking rebuttle.',
+        article_id: 2,
+        author: 'testuser2',
+        votes: 1,
+        created_at: new Date(1478813305349)
+      }
+    ]);
+  });
 });
