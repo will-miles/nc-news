@@ -6,8 +6,11 @@ const { expect } = require('chai');
 const connection = require('../db/connection');
 
 describe('/api', () => {
+  beforeEach(() => {
+    return connection.seed.run();
+  });
   after(() => {
-    connection.destroy();
+    return connection.destroy();
   });
   describe('/topics', () => {
     describe('GET', () => {
@@ -21,6 +24,11 @@ describe('/api', () => {
             expect(res.body[0]).to.contain.keys('description', 'slug');
           });
       });
+    });
+  });
+  describe('/users', () => {
+    describe('GET users by ID', () => {
+      it('Responds with the user object corresponding to the input ID.', () => {});
     });
   });
 });

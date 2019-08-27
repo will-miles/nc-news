@@ -29,6 +29,6 @@ exports.seed = function(knex) {
       return knex('comments').insert(formattedComments);
     })
     .then(() => {
-      console.log('Seeding Completed');
+      console.log('Seeding Completed...');
     });
 };
