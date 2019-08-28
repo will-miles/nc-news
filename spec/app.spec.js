@@ -41,8 +41,18 @@ describe('/api', () => {
           .get('/api/users/butter_bridge')
           .expect(200)
           .then(({ body }) => {
-            expect(body).to.be.an('array');
-            expect(body.length).to.equal(1);
+            expect(body).to.be.an('object');
+            expect(body).to.contain.keys('username', 'avatar_url', 'name');
+          });
+      });
+    });
+    describe('GET errors', () => {
+      it('Responds with appropriate errors', () => {
+        return request
+          .get('/api/users/1')
+          .expect(404)
+          .then(({ body }) => {
+            expect(body).to.eql({ msg: 'No user found for username: 1' });
           });
       });
     });
