@@ -79,5 +79,35 @@ describe('/api', () => {
           });
       });
     });
+    describe('PATCH article-votes by ID', () => {
+      it('Can increase the number of votes', () => {
+        return request
+          .patch('/api/articles/1')
+          .send({ inc_votes: 1 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.votes).to.equal(101);
+          });
+      });
+      it('Can decrease the number of votes', () => {
+        return request
+          .patch('/api/articles/1')
+          .send({ inc_votes: -1 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.votes).to.equal(99);
+          });
+      });
+    });
+    describe('PATCH errors', () => {
+      it('Responds with appropriate errors', () => {
+        return request
+          .patch('/api/articles/92')
+          .expect(404)
+          .then(({ body }) => {
+            expect(body).to.eql({ msg: 'No article found for article_id: 92' });
+          });
+      });
+    });
   });
 });

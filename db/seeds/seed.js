@@ -25,12 +25,7 @@ exports.seed = function(knex) {
     })
     .then(articleRows => {
       const articleRef = makeRefObj(articleRows, 'title', 'article_id');
-      // console.log(articleRef);
       const formattedComments = formatComments(commentData, articleRef);
-      // console.log(formattedComments);
       return knex('comments').insert(formattedComments);
-    })
-    .then(() => {
-      console.log('       Seeding Completed...');
     });
 };
