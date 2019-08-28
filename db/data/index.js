@@ -8,4 +8,6 @@ const data = {
   development: devData
 };
 
+console.log(ENV);
+
 module.exports = data[ENV];

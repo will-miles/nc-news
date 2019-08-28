@@ -13,12 +13,14 @@ exports.makeRefObj = (array, key, value) => {
 };
 
 exports.formatComments = (comments, articleRef) => {
-  return comments.map(comment => {
+  return comments.map(initialComment => {
+    const comment = { ...initialComment };
     comment.article_id = articleRef[comment.belongs_to];
     comment.author = comment.created_by;
     delete comment.created_by;
     delete comment.belongs_to;
     comment.created_at = new Date(comment.created_at);
+    // console.log(comment);
     return comment;
   });
 };

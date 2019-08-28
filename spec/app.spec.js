@@ -57,4 +57,27 @@ describe('/api', () => {
       });
     });
   });
+  describe('/articles', () => {
+    describe('GET article by ID', () => {
+      it('Returns the correct article data correspondng to the ID provided', () => {
+        return request
+          .get('/api/articles/1')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).to.be.an('object');
+            expect(body.comments_count).to.equal('13');
+          });
+      });
+    });
+    describe('GET errors', () => {
+      it('Responds with appropriate errors', () => {
+        return request
+          .get('/api/articles/92')
+          .expect(404)
+          .then(({ body }) => {
+            expect(body).to.eql({ msg: 'No article found for article_id: 92' });
+          });
+      });
+    });
+  });
 });
