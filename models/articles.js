@@ -37,4 +37,24 @@ const updateArticleVotes = (id, voteInc) => {
     });
 };
 
-module.exports = { fetchArticleById, updateArticleVotes };
+const createComment = (id, username, text) => {
+  const newCommentObj = { author: username, article_id: id, body: text };
+  return connection('comments')
+    .insert(newCommentObj)
+    .returning('*');
+};
+
+const fetchArticleComments = (id, { sort_by, order }) => {
+  return connection
+    .select('comment_id', 'votes', 'created_at', 'author', 'body')
+    .from('comments')
+    .where('article_id', id)
+    .orderBy(sort_by || 'created_at', order || 'desc');
+};
+
+module.exports = {
+  fetchArticleById,
+  updateArticleVotes,
+  createComment,
+  fetchArticleComments
+};

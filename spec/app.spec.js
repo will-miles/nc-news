@@ -4,6 +4,9 @@ const request = require('supertest')(app);
 const chai = require('chai');
 const { expect } = require('chai');
 const connection = require('../db/connection');
+const chaiSorted = require('chai-sorted');
+
+chai.use(chaiSorted);
 
 describe('/api', () => {
   beforeEach(() => {
@@ -24,13 +27,15 @@ describe('/api', () => {
             expect(body[0]).to.contain.keys('description', 'slug');
           });
       });
-      it('Responds with appropriate errors.', () => {
-        return request
-          .get('/api/topic')
-          .expect(404)
-          .then(({ body }) => {
-            expect(body.msg).to.equal('Route not found');
-          });
+      describe('GET errors', () => {
+        it('Responds with appropriate errors.', () => {
+          return request
+            .get('/api/topic')
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Route not found');
+            });
+        });
       });
     });
   });
@@ -45,15 +50,15 @@ describe('/api', () => {
             expect(body).to.contain.keys('username', 'avatar_url', 'name');
           });
       });
-    });
-    describe('GET errors', () => {
-      it('Responds with appropriate errors', () => {
-        return request
-          .get('/api/users/1')
-          .expect(404)
-          .then(({ body }) => {
-            expect(body).to.eql({ msg: 'No user found for username: 1' });
-          });
+      describe('GET errors', () => {
+        it('Responds with appropriate errors', () => {
+          return request
+            .get('/api/users/1')
+            .expect(404)
+            .then(({ body }) => {
+              expect(body).to.eql({ msg: 'No user found for username: 1' });
+            });
+        });
       });
     });
   });
@@ -68,15 +73,17 @@ describe('/api', () => {
             expect(body.comments_count).to.equal('13');
           });
       });
-    });
-    describe('GET errors', () => {
-      it('Responds with appropriate errors', () => {
-        return request
-          .get('/api/articles/92')
-          .expect(404)
-          .then(({ body }) => {
-            expect(body).to.eql({ msg: 'No article found for article_id: 92' });
-          });
+      describe('GET errors', () => {
+        it('Responds with appropriate errors', () => {
+          return request
+            .get('/api/articles/92')
+            .expect(404)
+            .then(({ body }) => {
+              expect(body).to.eql({
+                msg: 'No article found for article_id: 92'
+              });
+            });
+        });
       });
     });
     describe('PATCH article-votes by ID', () => {
@@ -98,14 +105,55 @@ describe('/api', () => {
             expect(body.votes).to.equal(99);
           });
       });
+      describe('PATCH errors', () => {
+        it('Responds with appropriate errors', () => {
+          return request
+            .patch('/api/articles/92')
+            .expect(404)
+            .then(({ body }) => {
+              expect(body).to.eql({
+                msg: 'No article found for article_id: 92'
+              });
+            });
+        });
+      });
     });
-    describe('PATCH errors', () => {
-      it('Responds with appropriate errors', () => {
+    describe('POST new comment to article', () => {
+      it('Posts and returns a new comment', () => {
         return request
-          .patch('/api/articles/92')
-          .expect(404)
+          .post('/api/articles/1/comments')
+          .send({
+            username: 'butter_bridge',
+            body: 'This is a new test comment :)'
+          })
+          .expect(201)
           .then(({ body }) => {
-            expect(body).to.eql({ msg: 'No article found for article_id: 92' });
+            expect(body).to.contain.keys(
+              'author',
+              'body',
+              'article_id',
+              'votes',
+              'created_at'
+            );
+          });
+      });
+    });
+    describe('GET comments for article', () => {
+      it('Returns an array of comments for the given article', () => {
+        return request
+          .get('/api/articles/1/comments')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).to.be.an('array');
+            expect(body).to.be.sortedBy('created_at', { descending: true });
+          });
+      });
+      it('Can be sorted by different column and order', () => {
+        return request
+          .get('/api/articles/1/comments?sort_by=votes&order=asc')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).to.be.sortedBy('votes', { descending: false });
           });
       });
     });
