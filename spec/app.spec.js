@@ -228,6 +228,14 @@ describe('/api', () => {
           });
       });
       describe('GET errors', () => {
+        it('Responds with appropriate 400 error', () => {
+          return request
+            .get('/api/articles/1/comments?sort_by=wrong')
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Bad request');
+            });
+        });
         it('Responds with appropriate 404 error', () => {
           return request
             .get('/api/articles/456/comments')
