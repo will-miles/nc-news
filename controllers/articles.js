@@ -2,7 +2,8 @@ const {
   fetchArticleById,
   updateArticleVotes,
   createComment,
-  fetchArticleComments
+  fetchArticleComments,
+  fetchAllArticles
 } = require('../models/articles');
 
 const getArticleById = (req, res, next) => {
@@ -44,9 +45,18 @@ const getCommentsForArticle = (req, res, next) => {
     .catch(next);
 };
 
+const getAllArticles = (req, res, next) => {
+  fetchAllArticles(req.query)
+    .then(articles => {
+      res.status(200).send(articles);
+    })
+    .catch(next);
+};
+
 module.exports = {
   getArticleById,
   patchArticleVotes,
   postComment,
-  getCommentsForArticle
+  getCommentsForArticle,
+  getAllArticles
 };

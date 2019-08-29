@@ -157,5 +157,52 @@ describe('/api', () => {
           });
       });
     });
+    describe('GET all articles', () => {
+      it('Returns the correct article data for all articles', () => {
+        return request
+          .get('/api/articles')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).to.be.an('array');
+            expect(body[0]).to.contain.keys(
+              'author',
+              'title',
+              'article_id',
+              'topic',
+              'created_at',
+              'votes',
+              'comments_count'
+            );
+            expect(body[0].comments_count).to.equal('13');
+          });
+      });
+      it('Returns articles filtered by author', () => {
+        return request
+          .get('/api/articles?author=butter_bridge')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).to.be.an('array');
+            expect(body.length).to.equal(3);
+          });
+      });
+      it('Returns articles filtered by topic', () => {
+        return request
+          .get('/api/articles?topic=cats')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).to.be.an('array');
+            expect(body.length).to.equal(1);
+          });
+      });
+      it('Returns articles filtered by author && topic', () => {
+        return request
+          .get('/api/articles?author=rogersop&&topic=mitch')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).to.be.an('array');
+            expect(body.length).to.equal(2);
+          });
+      });
+    });
   });
 });
