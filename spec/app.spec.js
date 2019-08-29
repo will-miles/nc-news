@@ -21,10 +21,10 @@ describe('/api', () => {
         return request
           .get('/api/topics')
           .expect(200)
-          .then(({ body }) => {
-            expect(body).to.be.an('array');
-            expect(body.length).to.equal(3);
-            expect(body[0]).to.contain.keys('description', 'slug');
+          .then(({ body: { topics } }) => {
+            expect(topics).to.be.an('array');
+            expect(topics.length).to.equal(3);
+            expect(topics[0]).to.contain.keys('description', 'slug');
           });
       });
       describe('GET errors', () => {
@@ -45,9 +45,9 @@ describe('/api', () => {
         return request
           .get('/api/users/butter_bridge')
           .expect(200)
-          .then(({ body }) => {
-            expect(body).to.be.an('object');
-            expect(body).to.contain.keys('username', 'avatar_url', 'name');
+          .then(({ body: { user } }) => {
+            expect(user).to.be.an('object');
+            expect(user).to.contain.keys('username', 'avatar_url', 'name');
           });
       });
       describe('GET errors', () => {
@@ -68,9 +68,9 @@ describe('/api', () => {
         return request
           .get('/api/articles/1')
           .expect(200)
-          .then(({ body }) => {
-            expect(body).to.be.an('object');
-            expect(body.comments_count).to.equal('13');
+          .then(({ body: { article } }) => {
+            expect(article).to.be.an('object');
+            expect(article.comment_count).to.equal('13');
           });
       });
       describe('GET errors', () => {
@@ -102,8 +102,8 @@ describe('/api', () => {
           .patch('/api/articles/1')
           .send({ inc_votes: 1 })
           .expect(200)
-          .then(({ body }) => {
-            expect(body.votes).to.equal(101);
+          .then(({ body: { article } }) => {
+            expect(article.votes).to.equal(101);
           });
       });
       it('Can decrease the number of votes', () => {
@@ -111,8 +111,8 @@ describe('/api', () => {
           .patch('/api/articles/1')
           .send({ inc_votes: -1 })
           .expect(200)
-          .then(({ body }) => {
-            expect(body.votes).to.equal(99);
+          .then(({ body: { article } }) => {
+            expect(article.votes).to.equal(99);
           });
       });
       describe('PATCH errors', () => {
@@ -160,8 +160,8 @@ describe('/api', () => {
             body: 'This is a new test comment :)'
           })
           .expect(201)
-          .then(({ body }) => {
-            expect(body).to.contain.keys(
+          .then(({ body: { comment } }) => {
+            expect(comment).to.contain.keys(
               'author',
               'body',
               'article_id',
@@ -214,17 +214,17 @@ describe('/api', () => {
         return request
           .get('/api/articles/1/comments')
           .expect(200)
-          .then(({ body }) => {
-            expect(body).to.be.an('array');
-            expect(body).to.be.sortedBy('created_at', { descending: true });
+          .then(({ body: { comments } }) => {
+            expect(comments).to.be.an('array');
+            expect(comments).to.be.sortedBy('created_at', { descending: true });
           });
       });
       it('Can be sorted by different column and order', () => {
         return request
           .get('/api/articles/1/comments?sort_by=votes&order=asc')
           .expect(200)
-          .then(({ body }) => {
-            expect(body).to.be.sortedBy('votes', { descending: false });
+          .then(({ body: { comments } }) => {
+            expect(comments).to.be.sortedBy('votes', { descending: false });
           });
       });
       describe('GET errors', () => {
@@ -248,8 +248,8 @@ describe('/api', () => {
           return request
             .get('/api/articles/2/comments')
             .expect(200)
-            .then(({ body }) => {
-              expect(body).to.eql([]);
+            .then(({ body: { comments } }) => {
+              expect(comments).to.eql([]);
             });
         });
       });
@@ -259,45 +259,45 @@ describe('/api', () => {
         return request
           .get('/api/articles')
           .expect(200)
-          .then(({ body }) => {
-            expect(body).to.be.an('array');
-            expect(body[0]).to.contain.keys(
+          .then(({ body: { articles } }) => {
+            expect(articles).to.be.an('array');
+            expect(articles[0]).to.contain.keys(
               'author',
               'title',
               'article_id',
               'topic',
               'created_at',
               'votes',
-              'comments_count'
+              'comment_count'
             );
-            expect(body[0].comments_count).to.equal('13');
+            expect(articles[0].comment_count).to.equal('13');
           });
       });
       it('Returns articles filtered by author', () => {
         return request
           .get('/api/articles?author=butter_bridge')
           .expect(200)
-          .then(({ body }) => {
-            expect(body).to.be.an('array');
-            expect(body.length).to.equal(3);
+          .then(({ body: { articles } }) => {
+            expect(articles).to.be.an('array');
+            expect(articles.length).to.equal(3);
           });
       });
       it('Returns articles filtered by topic', () => {
         return request
           .get('/api/articles?topic=cats')
           .expect(200)
-          .then(({ body }) => {
-            expect(body).to.be.an('array');
-            expect(body.length).to.equal(1);
+          .then(({ body: { articles } }) => {
+            expect(articles).to.be.an('array');
+            expect(articles.length).to.equal(1);
           });
       });
       it('Returns articles filtered by author && topic', () => {
         return request
           .get('/api/articles?author=rogersop&&topic=mitch')
           .expect(200)
-          .then(({ body }) => {
-            expect(body).to.be.an('array');
-            expect(body.length).to.equal(2);
+          .then(({ body: { articles } }) => {
+            expect(articles).to.be.an('array');
+            expect(articles.length).to.equal(2);
           });
       });
       describe('GET errors', () => {
@@ -337,8 +337,8 @@ describe('/api', () => {
           return request
             .get('/api/articles?notacolumn=something')
             .expect(200)
-            .then(({ body }) => {
-              expect(body).to.be.an('array');
+            .then(({ body: { articles } }) => {
+              expect(articles).to.be.an('array');
             });
         });
       });
@@ -351,8 +351,8 @@ describe('/api', () => {
           .patch('/api/comments/1')
           .send({ inc_votes: 1 })
           .expect(200)
-          .then(({ body }) => {
-            expect(body.votes).to.equal(17);
+          .then(({ body: { comment } }) => {
+            expect(comment.votes).to.equal(17);
           });
       });
       it('Can decrease the number of votes', () => {
@@ -360,8 +360,8 @@ describe('/api', () => {
           .patch('/api/comments/1')
           .send({ inc_votes: -1 })
           .expect(200)
-          .then(({ body }) => {
-            expect(body.votes).to.equal(15);
+          .then(({ body: { comment } }) => {
+            expect(comment.votes).to.equal(15);
           });
       });
       describe('PATCH errors', () => {
