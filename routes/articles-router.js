@@ -12,11 +12,13 @@ articlesRouter.route('/').get(getAllArticles);
 articlesRouter
   .route('/:article_id')
   .get(getArticleById)
-  .patch(patchArticleVotes);
+  .patch(patchArticleVotes)
+  .all((req, res, next) => next({ status: 405, msg: 'Method not allowed' }));
 
 articlesRouter
   .route('/:article_id/comments')
   .post(postComment)
-  .get(getCommentsForArticle);
+  .get(getCommentsForArticle)
+  .all((req, res, next) => next({ status: 405, msg: 'Method not allowed' }));
 
 module.exports = { articlesRouter };
