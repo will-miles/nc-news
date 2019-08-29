@@ -204,5 +204,37 @@ describe('/api', () => {
           });
       });
     });
+    describe('PATCH comment-votes by ID', () => {
+      it('Can increase the number of votes', () => {
+        return request
+          .patch('/api/comments/1')
+          .send({ inc_votes: 1 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.votes).to.equal(17);
+          });
+      });
+      it('Can decrease the number of votes', () => {
+        return request
+          .patch('/api/comments/1')
+          .send({ inc_votes: -1 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.votes).to.equal(15);
+          });
+      });
+      describe('PATCH errors', () => {
+        it('Responds with appropriate errors', () => {
+          return request
+            .patch('/api/comments/92')
+            .expect(404)
+            .then(({ body }) => {
+              expect(body).to.eql({
+                msg: 'No comment found for comment_id: 92'
+              });
+            });
+        });
+      });
+    });
   });
 });
