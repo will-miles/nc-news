@@ -204,6 +204,8 @@ describe('/api', () => {
           });
       });
     });
+  });
+  describe('/comments', () => {
     describe('PATCH comment-votes by ID', () => {
       it('Can increase the number of votes', () => {
         return request
@@ -227,6 +229,23 @@ describe('/api', () => {
         it('Responds with appropriate errors', () => {
           return request
             .patch('/api/comments/92')
+            .expect(404)
+            .then(({ body }) => {
+              expect(body).to.eql({
+                msg: 'No comment found for comment_id: 92'
+              });
+            });
+        });
+      });
+    });
+    describe('DELETE comment by ID', () => {
+      it('deletes the given comment succesfully', () => {
+        return request.delete('/api/comments/1').expect(204);
+      });
+      describe('DELETE errors', () => {
+        it('Responds with appropriate errors', () => {
+          return request
+            .delete('/api/comments/92')
             .expect(404)
             .then(({ body }) => {
               expect(body).to.eql({
