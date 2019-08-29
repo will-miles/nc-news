@@ -2,10 +2,10 @@ const express = require('express');
 const app = express();
 const apiRouter = require('./routes/api-router');
 const {
-  handle400Errors,
-  handleServerErrors,
   handleCustomErrors,
-  handle404Errors
+  handle400Errors,
+  handle404Errors,
+  handleServerErrors
 } = require('./errors/index');
 
 app.use(express.json());

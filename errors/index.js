@@ -23,8 +23,8 @@ const handleServerErrors = (err, req, res, next) => {
 };
 
 module.exports = {
-  handle400Errors,
-  handleServerErrors,
   handleCustomErrors,
-  handle404Errors
+  handle400Errors,
+  handle404Errors,
+  handleServerErrors
 };
