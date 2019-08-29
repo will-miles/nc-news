@@ -11,7 +11,7 @@ const updateCommentVotes = (id, voteInc) => {
       if (!outputComment) {
         return Promise.reject({
           status: 404,
-          msg: `No comment found for comment_id: ${id}`
+          msg: `Not found`
         });
       }
       return [outputComment];
@@ -28,7 +28,7 @@ const removeComment = id => {
       if (!outputComment) {
         return Promise.reject({
           status: 404,
-          msg: `No comment found for comment_id: ${id}`
+          msg: `Not found`
         });
       }
       return [outputComment];

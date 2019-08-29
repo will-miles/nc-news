@@ -1,7 +1,12 @@
 const express = require('express');
 const app = express();
 const apiRouter = require('./routes/api-router');
-const { handle400errors } = require('./errors/index');
+const {
+  handle400Errors,
+  handleServerErrors,
+  handleCustomErrors,
+  handle404Errors
+} = require('./errors/index');
 
 app.use(express.json());
 
@@ -11,6 +16,9 @@ app.use('/*', (req, res, next) =>
   res.status(404).send({ msg: 'Route not found' })
 );
 
-app.use(handle400errors);
+app.use(handleCustomErrors);
+app.use(handle400Errors);
+app.use(handle404Errors);
+app.use(handleServerErrors);
 
 module.exports = app;

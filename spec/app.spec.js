@@ -28,7 +28,7 @@ describe('/api', () => {
           });
       });
       describe('GET errors', () => {
-        it('Responds with appropriate errors.', () => {
+        it('Responds with appropriate 404 error.', () => {
           return request
             .get('/api/topic')
             .expect(404)
@@ -40,8 +40,8 @@ describe('/api', () => {
     });
   });
   describe('/users', () => {
-    describe('GET users by ID', () => {
-      it('Responds with the user object corresponding to the input ID.', () => {
+    describe('GET users by username', () => {
+      it('Responds with the user data object corresponding to the input username.', () => {
         return request
           .get('/api/users/butter_bridge')
           .expect(200)
@@ -51,12 +51,12 @@ describe('/api', () => {
           });
       });
       describe('GET errors', () => {
-        it('Responds with appropriate errors', () => {
+        it('Responds with appropriate 404 error', () => {
           return request
             .get('/api/users/1')
             .expect(404)
             .then(({ body }) => {
-              expect(body).to.eql({ msg: 'No user found for username: 1' });
+              expect(body).to.eql({ msg: 'Not found' });
             });
         });
       });
@@ -74,13 +74,23 @@ describe('/api', () => {
           });
       });
       describe('GET errors', () => {
-        it('Responds with appropriate errors', () => {
+        it('Responds with appropriate 404 error', () => {
           return request
             .get('/api/articles/92')
             .expect(404)
             .then(({ body }) => {
               expect(body).to.eql({
-                msg: 'No article found for article_id: 92'
+                msg: 'Not found'
+              });
+            });
+        });
+        it('Responds with appropriate 400 error', () => {
+          return request
+            .get('/api/articles/badID')
+            .expect(400)
+            .then(({ body }) => {
+              expect(body).to.eql({
+                msg: 'Bad request'
               });
             });
         });
@@ -106,13 +116,36 @@ describe('/api', () => {
           });
       });
       describe('PATCH errors', () => {
-        it('Responds with appropriate errors', () => {
+        it('Responds with appropriate 404 error', () => {
           return request
             .patch('/api/articles/92')
+            .send({ inc_votes: -1 })
             .expect(404)
             .then(({ body }) => {
               expect(body).to.eql({
-                msg: 'No article found for article_id: 92'
+                msg: 'Not found'
+              });
+            });
+        });
+        it('Responds with appropriate 400 error', () => {
+          return request
+            .patch('/api/articles/badID')
+            .send({ inc_votes: -1 })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body).to.eql({
+                msg: 'Bad request'
+              });
+            });
+        });
+        it('Responds with appropriate 400 error', () => {
+          return request
+            .patch('/api/articles/1')
+            .send({ inc_votes: 'not a number' })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body).to.eql({
+                msg: 'Bad request'
               });
             });
         });
@@ -137,6 +170,44 @@ describe('/api', () => {
             );
           });
       });
+      describe('POST errors', () => {
+        it('Responds with appropriate 404 error', () => {
+          return request
+            .post('/api/articles/4789/comments')
+            .send({
+              username: 'butter_bridge',
+              body: 'This is a new test comment :)'
+            })
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Not found');
+            });
+        });
+        it('Responds with appropriate 404 error', () => {
+          return request
+            .post('/api/articles/1/comments')
+            .send({
+              username: 'notauser',
+              body: 'This is a new test comment :)'
+            })
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Not found');
+            });
+        });
+        it('Responds with appropriate 400 error', () => {
+          return request
+            .post('/api/articles/notanid/comments')
+            .send({
+              username: 'butter_bridge',
+              body: 'This is a new test comment :)'
+            })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Bad request');
+            });
+        });
+      });
     });
     describe('GET comments for article', () => {
       it('Returns an array of comments for the given article', () => {
@@ -155,6 +226,32 @@ describe('/api', () => {
           .then(({ body }) => {
             expect(body).to.be.sortedBy('votes', { descending: false });
           });
+      });
+      describe('GET errors', () => {
+        it('Responds with appropriate 404 error', () => {
+          return request
+            .get('/api/articles/456/comments')
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Not found');
+            });
+        });
+        it('Responds with appropriate 400 error', () => {
+          return request
+            .get('/api/articles/notanid/comments')
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Bad request');
+            });
+        });
+        it('Responds with 200 + [] if article exists with no comments', () => {
+          return request
+            .get('/api/articles/2/comments')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body).to.eql([]);
+            });
+        });
       });
     });
     describe('GET all articles', () => {
@@ -203,6 +300,48 @@ describe('/api', () => {
             expect(body.length).to.equal(2);
           });
       });
+      describe('GET errors', () => {
+        it('Responds with appropriate 404 error', () => {
+          return request
+            .get('/api/notandendpoint')
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Route not found');
+            });
+        });
+        it('Responds with appropriate 404 error', () => {
+          return request
+            .get('/api/articles?author=notauser')
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Not found');
+            });
+        });
+        it('Responds with appropriate 404 error', () => {
+          return request
+            .get('/api/articles?topic=notatopic')
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Not found');
+            });
+        });
+        it('Responds with appropriate 404 error', () => {
+          return request
+            .get('/api/articles?topic=notatopic&&author=notanauthor')
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Not found');
+            });
+        });
+        it('Responds with appropriate 200 for incorrect column query request', () => {
+          return request
+            .get('/api/articles?notacolumn=something')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body).to.be.an('array');
+            });
+        });
+      });
     });
   });
   describe('/comments', () => {
@@ -226,13 +365,35 @@ describe('/api', () => {
           });
       });
       describe('PATCH errors', () => {
-        it('Responds with appropriate errors', () => {
+        it('Responds with appropriate 404 error', () => {
           return request
             .patch('/api/comments/92')
             .expect(404)
             .then(({ body }) => {
               expect(body).to.eql({
-                msg: 'No comment found for comment_id: 92'
+                msg: 'Not found'
+              });
+            });
+        });
+        it('Responds with appropriate 400 error', () => {
+          return request
+            .patch('/api/comments/2')
+            .send({ inc_votes: 'not a number' })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body).to.eql({
+                msg: 'Bad request'
+              });
+            });
+        });
+        it('Responds with appropriate 400 error', () => {
+          return request
+            .patch('/api/comments/notanid')
+            .send({ inc_votes: 1 })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body).to.eql({
+                msg: 'Bad request'
               });
             });
         });
@@ -243,13 +404,23 @@ describe('/api', () => {
         return request.delete('/api/comments/1').expect(204);
       });
       describe('DELETE errors', () => {
-        it('Responds with appropriate errors', () => {
+        it('Responds with appropriate 404 error', () => {
           return request
             .delete('/api/comments/92')
             .expect(404)
             .then(({ body }) => {
               expect(body).to.eql({
-                msg: 'No comment found for comment_id: 92'
+                msg: 'Not found'
+              });
+            });
+        });
+        it('Responds with appropriate 400 error', () => {
+          return request
+            .delete('/api/comments/notanid')
+            .expect(400)
+            .then(({ body }) => {
+              expect(body).to.eql({
+                msg: 'Bad request'
               });
             });
         });
