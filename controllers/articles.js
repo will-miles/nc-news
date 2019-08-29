@@ -10,7 +10,7 @@ const getArticleById = (req, res, next) => {
   const id = req.params.article_id;
   fetchArticleById(id)
     .then(([article]) => {
-      res.status(200).send(article);
+      res.status(200).send({ article });
     })
     .catch(next);
 };
@@ -20,7 +20,7 @@ const patchArticleVotes = (req, res, next) => {
   const votes = req.body.inc_votes;
   updateArticleVotes(id, votes)
     .then(([article]) => {
-      res.status(200).send(article);
+      res.status(200).send({ article });
     })
     .catch(next);
 };
@@ -31,7 +31,7 @@ const postComment = (req, res, next) => {
   const text = req.body.body;
   createComment(id, username, text)
     .then(([comment]) => {
-      res.status(201).send(comment);
+      res.status(201).send({ comment });
     })
     .catch(next);
 };
@@ -40,7 +40,7 @@ const getCommentsForArticle = (req, res, next) => {
   const id = req.params.article_id;
   fetchArticleComments(id, req.query)
     .then(comments => {
-      res.status(200).send(comments);
+      res.status(200).send({ comments });
     })
     .catch(next);
 };
@@ -48,7 +48,7 @@ const getCommentsForArticle = (req, res, next) => {
 const getAllArticles = (req, res, next) => {
   fetchAllArticles(req.query)
     .then(articles => {
-      res.status(200).send(articles);
+      res.status(200).send({ articles });
     })
     .catch(next);
 };
