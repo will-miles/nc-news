@@ -6,7 +6,72 @@
     "description": "serves an array of all topics",
     "queries": [],
     "exampleResponse": {
-      "topics": [{ "slug": "football", "description": "Footie!" }]
+      "topics": [
+        {
+          "description": "The man, the Mitch, the legend",
+          "slug": "mitch"
+        },
+        {
+          "description": "Not dogs",
+          "slug": "cats"
+        }
+      ]
+    }
+  },
+  "GET /api/users/:username": {
+    "description": "serves a single user object containing: 'username', 'avatar_url' and 'name'",
+    "queries": [],
+    "exampleResponse": {
+      "user": {
+        "username": "butter_bridge",
+        "name": "jonny",
+        "avatar_url": "https: //www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      }
+    }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves a single article object containing: 'author', 'title', 'body', 'topic', 'created_at', 'votes' and 'comment_count'",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "article_id": 1,
+        "title": "Living in the shadow of a great man",
+        "body": "I find this existence challenging",
+        "votes": 100,
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "created_at": "2018-11-15T12: 21: 54.171Z",
+        "comment_count": "13"
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "accepts object in the form { inc_votes: 1 }, { inc_votes: -1 }. And serves an updated article object",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "article_id": 1,
+        "title": "Living in the shadow of a great man",
+        "body": "I find this existence challenging",
+        "votes": 101,
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "created_at": "2018-11-15T12: 21: 54.171Z"
+      }
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "accepts object in the form {username: 'butter_bridge',body: 'This is a new test comment :)'}. And serves the new comment object",
+    "queries": ["sort_by", "order"],
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 19,
+        "author": "butter_bridge",
+        "article_id": 1,
+        "votes": 0,
+        "created_at": "2019-08-30T08: 34: 26.160Z",
+        "body": "This is a new test comment :)"
+      }
     }
   },
   "GET /api/articles": {

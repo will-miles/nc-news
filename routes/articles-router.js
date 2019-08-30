@@ -7,7 +7,10 @@ const {
   getAllArticles
 } = require('../controllers/articles');
 
-articlesRouter.route('/').get(getAllArticles);
+articlesRouter
+  .route('/')
+  .get(getAllArticles)
+  .all((req, res, next) => next({ status: 405, msg: 'Method not allowed' }));
 
 articlesRouter
   .route('/:article_id')

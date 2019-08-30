@@ -33,7 +33,7 @@ describe('/api', () => {
             .get('/api/topic')
             .expect(404)
             .then(({ body }) => {
-              expect(body.msg).to.equal('Route not found');
+              expect(body.msg).to.equal('Not found');
             });
         });
       });
@@ -207,6 +207,14 @@ describe('/api', () => {
               expect(body.msg).to.equal('Bad request');
             });
         });
+        it('Responds with appropriate 400 error', () => {
+          return request
+            .post('/api/articles/1/comments')
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Bad request');
+            });
+        });
       });
     });
     describe('GET comments for article', () => {
@@ -314,7 +322,7 @@ describe('/api', () => {
             .get('/api/notandendpoint')
             .expect(404)
             .then(({ body }) => {
-              expect(body.msg).to.equal('Route not found');
+              expect(body.msg).to.equal('Not found');
             });
         });
         it('Responds with appropriate 404 error', () => {
@@ -433,6 +441,28 @@ describe('/api', () => {
             });
         });
       });
+    });
+  });
+  describe('/api Errors', () => {
+    it('DELETE /api -> 405', () => {
+      return request
+        .delete('/api')
+        .expect(405)
+        .then(({ body }) => {
+          expect(body).to.eql({
+            msg: 'Method not allowed'
+          });
+        });
+    });
+    it('PATCH /api/articles -> 405', () => {
+      return request
+        .patch('/api/articles')
+        .expect(405)
+        .then(({ body }) => {
+          expect(body).to.eql({
+            msg: 'Method not allowed'
+          });
+        });
     });
   });
 });
