@@ -443,6 +443,19 @@ describe('/api', () => {
       });
     });
   });
+  describe('GET /api', () => {
+    it('returns the json object depicting all the endpoints of the api', () => {
+      return request
+        .get('/api')
+        .expect(200)
+        .then(({ body: { endpoints } }) => {
+          expect(endpoints).to.contain.keys(
+            'GET /api',
+            'GET /api/users/:username'
+          );
+        });
+    });
+  });
   describe('/api Errors', () => {
     it('DELETE /api -> 405', () => {
       return request
