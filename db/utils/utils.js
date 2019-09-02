@@ -1,5 +1,5 @@
 exports.formatDates = list => {
-  return list.map(elem => {
+  return [...list].map(elem => {
     elem.created_at = new Date(elem.created_at);
     return elem;
   });
@@ -20,7 +20,6 @@ exports.formatComments = (comments, articleRef) => {
     delete comment.created_by;
     delete comment.belongs_to;
     comment.created_at = new Date(comment.created_at);
-    // console.log(comment);
     return comment;
   });
 };

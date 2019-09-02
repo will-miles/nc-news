@@ -4,7 +4,7 @@ const handleCustomErrors = (err, req, res, next) => {
 };
 
 const handle400Errors = (err, req, res, next) => {
-  const codes = ['22P02', '42703', '23502'];
+  const codes = ['22P02', '42703', '23502', '42P01'];
   if (codes.includes(err.code))
     return res.status(400).send({ msg: 'Bad request' });
   else next(err);

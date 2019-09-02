@@ -38,7 +38,8 @@ const postComment = (req, res, next) => {
 
 const getCommentsForArticle = (req, res, next) => {
   const id = req.params.article_id;
-  fetchArticleComments(id, req.query)
+  const query = req.query;
+  fetchArticleComments(id, query)
     .then(comments => {
       res.status(200).send({ comments });
     })
@@ -46,7 +47,8 @@ const getCommentsForArticle = (req, res, next) => {
 };
 
 const getAllArticles = (req, res, next) => {
-  fetchAllArticles(req.query)
+  const query = req.query;
+  fetchAllArticles(query)
     .then(articles => {
       res.status(200).send({ articles });
     })
