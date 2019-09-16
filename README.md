@@ -106,3 +106,7 @@ const customConfig = {
 
 module.exports = { ...customConfig[ENV], ...baseConfig };
 ```
+
+### Find the hosted version here:
+
+https://w-miles-nc-news.herokuapp.com/api
