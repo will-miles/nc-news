@@ -1,5 +1,9 @@
 const connection = require('../db/connection');
 
+const fetchAllUsers = () => {
+  return connection.select('*').from('users');
+};
+
 const fetchUserByUsername = user => {
   return connection
     .select('*')
@@ -16,4 +20,4 @@ const fetchUserByUsername = user => {
     });
 };
 
-module.exports = { fetchUserByUsername };
+module.exports = { fetchAllUsers, fetchUserByUsername };
